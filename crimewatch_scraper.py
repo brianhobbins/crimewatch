@@ -1,8 +1,5 @@
-# Using Selenium and BeautifulSoup
-
-
-
 from bs4 import BeautifulSoup as bs
+from openai import OpenAI as oi
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -23,7 +20,7 @@ browser.get('https://www.crimewatchpa.com/warrants')
 click_counter = 0
 
 # Loop to expand the page by clicking "Show More" until the button is no longer active or present
-while click_counter <101:
+while click_counter < 2:
     try:
         wait = WebDriverWait(browser, 5)
         show_more_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Show more')]")))
@@ -47,24 +44,65 @@ while click_counter <101:
         else:
             print(e)
         break
+
+print('\n')   
 html = browser.page_source
 browser.quit()
 
+# Parse the HTML
 soup = bs(html, "html.parser")
 
 # grab all cards
 cards_array = []
 card_bodies = soup.find_all('div', class_='card-body')
-
+user_input = ""
 for card in card_bodies:
     card_text = card.get_text(strip=True)
     cards_array.append(card_text)
-    print(card_text)
-
+    user_input += card_text + '\n'
 
 # Send cards to a textfile
-with open('card_text.txt', 'w', encoding='utf-8') as file:
-    # Write the contents of the array to the file
-    for cards in cards_array:
-        file.write(cards + '\n')
-print('Number of clicks:',click_counter)
+# with open('card_text.txt', 'w', encoding='utf-8') as file:
+#     # Write the contents of the array to the file
+#     for cards in cards_array:
+#         file.write(cards + '\n')
+print(f'Number of Pages:{click_counter}')
+
+#grab the system prompt from system.prompt file
+
+with open('system.prompt', 'r', encoding='utf-8') as file:
+    sys_prompt = file.read()
+
+# Send the data to llama using the openapi client
+# Point to the local server
+client = oi(base_url="http://localhost:1234/v1", api_key="lm-studio")
+
+completion = client.chat.completions.create(
+  model="NousResearch/Hermes-2-Pro-Mistral-7B-GGUF",
+  messages=[
+    {"role": "system", "content": sys_prompt},
+    {"role": "user", "content": user_input},
+  ],
+  temperature=0.7,
+)
+
+print(completion.choices[0].message.content)
+
+# new_message = {"role": "assistant", "content": ""}
+
+# for chunk in completion:
+#     if chunk.choices[0].delta.content:
+#         print(chunk.choices[0].delta.content, end="", flush=True)
+#         new_message["content"] += chunk.choices[0].delta.content
+
+# message.append(new_message)
+# print(message)
+    
+    # Uncomment to see chat history
+    # import json
+    # gray_color = "\033[90m"
+    # reset_color = "\033[0m"
+    # print(f"{gray_color}\n{'-'*20} History dump {'-'*20}\n")
+    # print(json.dumps(history, indent=2))
+    # print(f"\n{'-'*55}\n{reset_color}")
+
