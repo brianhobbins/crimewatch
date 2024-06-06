@@ -46,7 +46,7 @@ while click_counter < 2:
             print(e)
         break
 
-print('\n')   
+ 
 html = browser.page_source
 browser.quit()
 
@@ -63,36 +63,17 @@ for card in card_bodies:
     user_input += card_text + '\n'
 
 
-print(f'Number of Pages:{click_counter}')
+print(f'Number of Pages:{click_counter}\n')
 
 # Grab the system prompt from system.prompt file
 with open('system.prompt', 'r', encoding='utf-8') as file:
     sys_prompt = file.read()
 
-# Send the data to llama using the openapi client
-# Point to the local server
+# Set the API Key, Load Gemini Model and set system prompt
 gem.configure(api_key=os.environ['GOOGLE_API_KEY'])
+model = gem.GenerativeModel(model_name='gemini-1.5-flash',system_instruction=[sys_prompt])
+print("Ready for raw data")
 
-model = gem.GenerativeModel('gemini-1.5-flash')
-response = model.generate_content(sys_prompt)
-
+# Send the raw data from crimewatchto Gemini. Return the response and print,
+response = model.generate_content(user_input)
 print(response.text)
-
-# new_message = {"role": "assistant", "content": ""}
-
-# for chunk in completion:
-#     if chunk.choices[0].delta.content:
-#         print(chunk.choices[0].delta.content, end="", flush=True)
-#         new_message["content"] += chunk.choices[0].delta.content
-
-# message.append(new_message)
-# print(message)
-    
-    # Uncomment to see chat history
-    # import json
-    # gray_color = "\033[90m"
-    # reset_color = "\033[0m"
-    # print(f"{gray_color}\n{'-'*20} History dump {'-'*20}\n")
-    # print(json.dumps(history, indent=2))
-    # print(f"\n{'-'*55}\n{reset_color}")
-
