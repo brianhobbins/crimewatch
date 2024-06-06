@@ -1,11 +1,19 @@
-from bs4 import BeautifulSoup as bs
-import google.generativeai as gem
+# CRIMEWATCH WARRANT SCRAPER AND ANALYSIS
+# Author: @brianhobbins
+
+
+
+
+
 import os
+import json
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+import google.generativeai as gem
+from bs4 import BeautifulSoup as bs
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementClickInterceptedException,TimeoutException
 
@@ -53,7 +61,7 @@ browser.quit()
 # Parse the HTML
 soup = bs(html, "html.parser")
 
-# grab all cards
+# grab all cards and store them in a newline seperated string
 cards_array = []
 card_bodies = soup.find_all('div', class_='card-body')
 user_input = ""
@@ -63,7 +71,7 @@ for card in card_bodies:
     user_input += card_text + '\n'
 
 
-print(f'Number of Pages:{click_counter}\n')
+print(f'\nNumber of Pages:{click_counter}')
 
 # Grab the system prompt from system.prompt file
 with open('system.prompt', 'r', encoding='utf-8') as file:
@@ -76,4 +84,9 @@ print("Ready for raw data")
 
 # Send the raw data from crimewatchto Gemini. Return the response and print,
 response = model.generate_content(user_input)
+
+# Write the response to warrants.JSON and print to console
+with open('warrants.JSON', 'w', encoding='utf-8') as file:
+    json.dump(response, file)
+
 print(response.text)
