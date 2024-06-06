@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as bs
-from openai import OpenAI as oi
+import google.generativeai as gem
+import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -61,32 +62,21 @@ for card in card_bodies:
     cards_array.append(card_text)
     user_input += card_text + '\n'
 
-# Send cards to a textfile
-# with open('card_text.txt', 'w', encoding='utf-8') as file:
-#     # Write the contents of the array to the file
-#     for cards in cards_array:
-#         file.write(cards + '\n')
+
 print(f'Number of Pages:{click_counter}')
 
-#grab the system prompt from system.prompt file
-
+# Grab the system prompt from system.prompt file
 with open('system.prompt', 'r', encoding='utf-8') as file:
     sys_prompt = file.read()
 
 # Send the data to llama using the openapi client
 # Point to the local server
-client = oi(base_url="http://localhost:1234/v1", api_key="lm-studio")
+gem.configure(api_key=os.environ['GOOGLE_API_KEY'])
 
-completion = client.chat.completions.create(
-  model="NousResearch/Hermes-2-Pro-Mistral-7B-GGUF",
-  messages=[
-    {"role": "system", "content": sys_prompt},
-    {"role": "user", "content": user_input},
-  ],
-  temperature=0.7,
-)
+model = gem.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content(sys_prompt)
 
-print(completion.choices[0].message.content)
+print(response.text)
 
 # new_message = {"role": "assistant", "content": ""}
 
