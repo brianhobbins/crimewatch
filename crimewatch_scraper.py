@@ -87,6 +87,6 @@ response = model.generate_content(user_input)
 
 # Write the response to warrants.JSON and print to console
 with open('warrants.JSON', 'w', encoding='utf-8') as file:
-    json.dump(response, file)
+    json.dump(response.text, file)
 
 print(response.text)
