@@ -1,10 +1,6 @@
 # CRIMEWATCH WARRANT SCRAPER AND ANALYSIS
 # Author: @brianhobbins
 
-
-
-
-
 import os
 import json
 from selenium import webdriver
@@ -29,7 +25,7 @@ browser.get('https://www.crimewatchpa.com/warrants')
 click_counter = 0
 
 # Loop to expand the page by clicking "Show More" until the button is no longer active or present
-while click_counter < 2:
+while click_counter < 10:
     try:
         wait = WebDriverWait(browser, 5)
         show_more_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Show more')]")))
@@ -86,4 +82,7 @@ response = model.generate_content(user_input)
 with open('warrants.JSON', 'w', encoding='utf-8') as file:
     json.dump(response.text, file)
 
-print(response.text)
+print("json file created")
+
+
+# print(response.text)
