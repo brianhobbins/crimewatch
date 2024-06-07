@@ -54,7 +54,7 @@ while click_counter < 2:
             print(e)
         break
 
- 
+# Get the HTML
 html = browser.page_source
 browser.quit()
 
@@ -62,14 +62,11 @@ browser.quit()
 soup = bs(html, "html.parser")
 
 # grab all cards and store them in a newline seperated string
-cards_array = []
 card_bodies = soup.find_all('div', class_='card-body')
 user_input = ""
 for card in card_bodies:
     card_text = card.get_text(strip=True)
-    cards_array.append(card_text)
-    user_input += card_text + '\n'
-
+    user_input += f'{card_text}\n'
 
 print(f'\nNumber of Pages:{click_counter}')
 
