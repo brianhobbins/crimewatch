@@ -25,7 +25,7 @@ browser.get('https://www.crimewatchpa.com/warrants')
 click_counter = 0
 
 # Loop to expand the page by clicking "Show More" until the button is no longer active or present
-while click_counter < 26:
+while click_counter < 2:
     try:
         wait = WebDriverWait(browser, 5)
         show_more_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Show more')]")))
@@ -77,7 +77,8 @@ print("Ready for raw data")
 
 # Send the raw data to Gemini. Return the response
 response = model.generate_content(user_input)
-
+# strip special characters because it's easier than negative prompting
+response = response.text.strip()
 # Write the response to warrants.json
 with open('warrants.json', 'w', encoding='utf-8') as file:
     json.dump(response.text, file)
