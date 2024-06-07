@@ -1,4 +1,4 @@
-# Warrantwatch
+# Warrant Watch
 ___
 Pulls raw warrant data and formats into a JSON file. It uses Google's Gemini API to format the raw data. 
 
