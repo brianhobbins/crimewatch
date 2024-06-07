@@ -1,4 +1,4 @@
-# CRIMEWATCH WARRANT SCRAPER AND ANALYSIS
+# WARRANT SCRAPER AND ANALYSIS
 # Author: @brianhobbins
 
 import os
@@ -83,6 +83,3 @@ with open('warrants.json', 'w', encoding='utf-8') as file:
     json.dump(response.text, file)
 
 print("json file created")
-
-
-# # print(response.text)
