@@ -25,7 +25,7 @@ browser.get('https://www.crimewatchpa.com/warrants')
 click_counter = 0
 
 # Loop to expand the page by clicking "Show More" until the button is no longer active or present
-while click_counter < 10:
+while click_counter < 26:
     try:
         wait = WebDriverWait(browser, 5)
         show_more_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Show more')]")))
@@ -75,14 +75,14 @@ gem.configure(api_key=os.environ['GOOGLE_API_KEY'])
 model = gem.GenerativeModel(model_name='gemini-1.5-flash',system_instruction=[sys_prompt])
 print("Ready for raw data")
 
-# Send the raw data from crimewatchto Gemini. Return the response and print,
+# Send the raw data to Gemini. Return the response
 response = model.generate_content(user_input)
 
-# Write the response to warrants.JSON and print to console
-with open('warrants.JSON', 'w', encoding='utf-8') as file:
+# Write the response to warrants.json
+with open('warrants.json', 'w', encoding='utf-8') as file:
     json.dump(response.text, file)
 
 print("json file created")
 
 
-# print(response.text)
+# # print(response.text)
